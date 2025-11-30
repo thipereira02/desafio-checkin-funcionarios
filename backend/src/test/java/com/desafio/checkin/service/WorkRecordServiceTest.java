@@ -46,6 +46,7 @@ class WorkRecordServiceTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void checkOut_ShouldCalculateDurationCorrectly() {
         Long employeeId = 1L;
         
