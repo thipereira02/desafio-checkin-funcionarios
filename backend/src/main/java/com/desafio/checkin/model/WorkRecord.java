@@ -18,7 +18,6 @@ public class WorkRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacionamento: Um registro pertence a um funcionário
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
@@ -28,6 +27,5 @@ public class WorkRecord {
 
     private LocalDateTime checkoutTime;
 
-    // Vamos salvar a duração em minutos (mais fácil de calcular)
     private Long durationInMinutes; 
 }
