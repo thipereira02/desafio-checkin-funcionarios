@@ -101,11 +101,13 @@ cd backend
 
 ## 📂 Estrutura do Projeto
 
+O projeto segue uma estrutura de Monorepo organizado:
+
 ```text
 /
 ├── backend/                     # API Spring Boot (Java 17)
 │   ├── src/main/java/com/desafio/checkin
-│   │   ├── config/              # Configurações Globais (CORS)
+│   │   ├── config/              # Configurações Globais (WebConfig/CORS)
 │   │   ├── controller/          # Controladores REST (Auth, WorkRecord)
 │   │   ├── dto/                 # Objetos de Transferência (LoginDTO)
 │   │   ├── model/               # Entidades JPA (Employee, WorkRecord)
@@ -119,6 +121,7 @@ cd backend
 │   │   ├── components/          # Componentes Visuais Reutilizáveis (SharedStyles)
 │   │   ├── pages/               # Páginas da Aplicação (Login, Dashboard)
 │   │   ├── styles/              # Estilos Globais (GlobalStyles)
+│   │   ├── utils/               # Funções Utilitárias (Validação de Formulário)
 │   │   ├── App.tsx              # Configuração de Rotas
 │   │   └── main.tsx             # Ponto de Entrada
 │   └── package.json             # Dependências e Scripts
