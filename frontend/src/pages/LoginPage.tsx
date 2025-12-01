@@ -91,7 +91,9 @@ export function LoginPage() {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setError(err.response?.data || 'Ocorreu um erro. Verifique seus dados.');
+        console.error(err);
+        const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Ocorreu um erro desconhecido.';
+        setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
     } finally {
       setLoading(false);
     }
