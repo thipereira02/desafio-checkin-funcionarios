@@ -3,6 +3,7 @@ package com.desafio.checkin.controller;
 import com.desafio.checkin.dto.LoginDTO;
 import com.desafio.checkin.model.Employee;
 import com.desafio.checkin.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
         try {
             Employee employee = employeeService.authenticate(loginDTO);
             return ResponseEntity.ok(employee);
@@ -28,11 +29,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Employee employee) {
+    public ResponseEntity<?> register(@RequestBody @Valid Employee employee) {
         try {
-            return ResponseEntity.ok(employeeService.createEmployee(employee));
+             return ResponseEntity.ok(employeeService.createEmployee(employee));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

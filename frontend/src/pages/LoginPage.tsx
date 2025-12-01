@@ -4,6 +4,7 @@ import { LogIn, UserPlus } from 'lucide-react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { BaseCard, BaseButton, BaseInput, PageContainer } from '../components/SharedStyles';
+import { validateLogin } from '../components/validation';
 
 const LoginContainer = styled(PageContainer)`
   align-items: center;
@@ -67,9 +68,11 @@ const SwitchButton = styled.button`
 export function LoginPage() {
   const navigate = useNavigate();
   const [isRegistering, setIsRegistering] = useState(false);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -78,22 +81,30 @@ export function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+
+    const validationError = validateLogin({ email, password, name, isRegistering });
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (isRegistering) {
         await axios.post(`${API_URL}/auth/register`, { name, email, password });
         setIsRegistering(false);
-        alert('Conta criada! Faça login agora.');
+        setPassword('');
+        alert('Conta criada com sucesso! Faça login agora.');
       } else {
         const response = await axios.post(`${API_URL}/auth/login`, { email, password });
         localStorage.setItem('user', JSON.stringify(response.data));
         navigate('/dashboard');
       }
     } catch (err: any) {
-        console.error(err);
-        const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Ocorreu um erro desconhecido.';
-        setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+      console.error(err);
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Ocorreu um erro desconhecido.';
+      setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
     } finally {
       setLoading(false);
     }
@@ -109,32 +120,32 @@ export function LoginPage() {
         </div>
         <Title>{isRegistering ? 'Criar Nova Conta' : 'Acesso ao Ponto'}</Title>
 
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} noValidate>
           {isRegistering && (
             <InputGroup>
               <Label>Nome Completo</Label>
-              <BaseInput type="text" required value={name} onChange={(e) => setName(e.target.value)} />
+              <BaseInput type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex: João Silva" />
             </InputGroup>
           )}
 
           <InputGroup>
             <Label>Email Corporativo</Label>
-            <BaseInput type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <BaseInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu.email@empresa.com" />
           </InputGroup>
 
           <InputGroup>
             <Label>Senha</Label>
-            <BaseInput type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <BaseInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
           </InputGroup>
 
-          {error && <p style={{ color: '#ef4444', textAlign: 'center', fontSize: '0.875rem' }}>{error}</p>}
+          {error && <p style={{ color: '#ef4444', textAlign: 'center', fontSize: '0.875rem', fontWeight: 500 }}>{error}</p>}
 
           <PrimaryButton type="submit" disabled={loading}>
             {loading ? 'Carregando...' : isRegistering ? 'Cadastrar' : 'Entrar'}
           </PrimaryButton>
         </Form>
 
-        <SwitchButton onClick={() => setIsRegistering(!isRegistering)}>
+        <SwitchButton onClick={() => { setIsRegistering(!isRegistering); setError(''); }}>
           {isRegistering ? <LogIn size={16} /> : <UserPlus size={16} />}
           {isRegistering ? 'Já tenho conta' : 'Não tenho cadastro'}
         </SwitchButton>
